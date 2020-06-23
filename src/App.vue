@@ -1,19 +1,56 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="container">
+      <div style="width: 300px; position: fixed;">
+        <ul id="tree" class="ztree" style="width:100%;"></ul>
+      </div>
+      <div class="markdown-body" style="margin-left: 300px;  max-width: 1200px;border-left: 1px solid #ccc;padding-left: 50px;">
+        <div v-html="compileMarkdown" v-highlight></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Marked from "marked";
+import axios from "axios";
+import "../node_modules/github-markdown-css/github-markdown.css";
+
+let renderMd = new Marked.Renderer();
+
+Marked.setOptions({
+  renderer: renderMd,
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+});
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  components: {},
+  data() {
+    return {
+      article: {
+        content: "加载中...",
+      },
+    };
+  },
+  computed: {
+    compileMarkdown() {
+      return Marked(this.article.content, { sanitize: true });
+    },
+  },
+
+  mounted() {
+    const url = "./test.md";
+    axios.get(url).then((response) => {
+      this.article.content = response.data;
+    });
+  },
+};
 </script>
 
 <style>
@@ -21,8 +58,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  text-align: left;
 }
 </style>
