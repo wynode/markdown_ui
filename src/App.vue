@@ -6,6 +6,7 @@
       </div>
       <div class="markdown-body" style="margin-left: 300px;  max-width: 1200px;border-left: 1px solid #ccc;padding-left: 50px;">
         <div v-html="compileMarkdown" v-highlight></div>
+        <vue-markdown :source="compileMarkdown" :toc="true" toc-class=".ztree" toc-id="#tree">this is the default slot</vue-markdown>
       </div>
     </div>
   </div>
@@ -14,6 +15,7 @@
 <script>
 import Marked from "marked";
 import axios from "axios";
+import VueMarkdown from 'vue-markdown-v2'
 import "../node_modules/github-markdown-css/github-markdown.css";
 
 let renderMd = new Marked.Renderer();
@@ -30,7 +32,9 @@ Marked.setOptions({
 });
 
 export default {
-  components: {},
+  components: {
+    VueMarkdown,
+  },
   data() {
     return {
       article: {
